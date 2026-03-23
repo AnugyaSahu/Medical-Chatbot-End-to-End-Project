@@ -22,4 +22,27 @@ conda create -n medibot python=3.11 -y
 pip install -r requirements.txt
 ```
 
+### 3. Create a .env file in the root directory and add your Pinecone & openai(or other llm model):
+
+```bash
+PINECONE_API_KEY = "xxxxxxxx"
+OPENAI_API_KEY = "xxxxxxx"
+```
+
+```bash
+# run to store embeddings to pinecone
+python store_index.py
+```
+```bash
+# run
+python app.py
+```
+
+Now
+```bash
+open up localhost:
+```
+
+
+
 ![Project Architecture](architecture.png)
