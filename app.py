@@ -5,7 +5,6 @@ from langchain_pinecone import PineconeVectorStore
 from dotenv import load_dotenv
 from langchain.chains import create_retrieval_chain
 from langchain_community.chat_models import ChatOllama
-from langchain_openai import ChatOpenAI
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -16,10 +15,8 @@ load_dotenv()
 app = Flask(__name__)
 
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 embeddings = download_embeddings()
 
@@ -31,7 +28,8 @@ docsearch = PineconeVectorStore.from_existing_index(
 
 retriever = docsearch.as_retriever(search_type = "similarity", search_kwargs={"k": 3})
 
-chatModel = ChatOllama(model="llama3.2")
+OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
+chatModel = ChatOllama(model="llama3.2", base_url=OLLAMA_BASE_URL)
 
 prompt = ChatPromptTemplate.from_messages(
     [
