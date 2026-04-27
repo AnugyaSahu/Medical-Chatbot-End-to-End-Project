@@ -11,6 +11,8 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from src.prompt import *
 
+load_dotenv()
+
 app = Flask(__name__)
 
 PINECONE_API_KEY = os.environ.get("PINECONE_API_KEY")
@@ -45,3 +47,15 @@ rag_chain = create_retrieval_chain(retriever, qa_chain)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/get", methods=["GET","POST"])
+def get_bot_response():
+    user_input = request.form["msg"]
+    input = user_input
+    print("User input:", input)
+    response = rag_chain.invoke({"input": user_input})
+    print("Bot response:", response["answer"])
+    return str(response["answer"])
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, debug=True)
